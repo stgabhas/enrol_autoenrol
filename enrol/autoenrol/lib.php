@@ -112,6 +112,7 @@ class enrol_autoenrol_plugin extends enrol_plugin {
         if ($instance->customint1 == 0 && $this->enrol_allowed($USER, $instance)) {
             $this->enrol_user($instance, $USER->id, $instance->customint3, time(), 0);
             $this->process_group($instance, $USER);
+            $this->email_welcome_message($instance, $USER);
             return 9999999999;
         }
         return false;
@@ -471,5 +472,66 @@ class enrol_autoenrol_plugin extends enrol_plugin {
         }
 
         return $group;
+    }
+
+    /**
+     * Send welcome email to specified user.
+     *
+     * @param stdClass $instance
+     * @param stdClass $user user record
+     * @return void
+     */
+    protected function email_welcome_message($instance, $user) {
+        global $CFG, $DB;
+        if (empty(trim($instance->customtext1))) {
+            // No welcome message set, nothing to do.
+            return;
+        }
+
+        $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
+        $context = context_course::instance($course->id);
+
+        $a = new stdClass();
+        $a->coursename = format_string($course->fullname, true, array('context' => $context));
+        $a->profileurl = "$CFG->wwwroot/user/view.php?id=$user->id&course=$course->id";
+
+        $message = $instance->customtext1;
+        $key = array('{$a->coursename}', '{$a->profileurl}', '{$a->fullname}', '{$a->email}');
+        $value = array($a->coursename, $a->profileurl, fullname($user), $user->email);
+        $message = str_replace($key, $value, $message);
+        if (strpos($message, '<') === false) {
+            // Plain text only.
+            $messagetext = $message;
+            $messagehtml = text_to_html($messagetext, null, false, true);
+        } else {
+            // This is most probably the tag/newline soup known as FORMAT_MOODLE.
+            $messagehtml = format_text($message, FORMAT_MOODLE,
+                array('context' => $context, 'para' => false, 'newlines' => true, 'filter' => true));
+            $messagetext = html_to_text($messagehtml);
+        }
+
+        $subject = get_string('welcometocourse', 'enrol_autoenrol',
+            format_string($course->fullname, true, array('context' => $context)));
+
+        $rusers = array();
+        if (!empty($CFG->coursecontact)) {
+            $croles = explode(',', $CFG->coursecontact);
+            list($sort, $sortparams) = users_order_by_sql('u');
+            // We only use the first user.
+            $i = 0;
+            do {
+                $rusers = get_role_users($croles[$i], $context, true, '',
+                    'r.sortorder ASC, ' . $sort, null, '', '', '', '', $sortparams);
+                $i++;
+            } while (empty($rusers) && !empty($croles[$i]));
+        }
+        if ($rusers) {
+            $contact = reset($rusers);
+        } else {
+            $contact = core_user::get_support_user();
+        }
+
+        // Directly emailing welcome message rather than using messaging.
+        email_to_user($user, $contact, $subject, $messagetext, $messagehtml);
     }
 }

@@ -40,6 +40,7 @@ class enrol_autoenrol_edit_form extends moodleform {
         $this->add_hidden_fields();
         $this->add_general_section($instance, $plugin, $context);
         $this->add_filtering_section();
+        $this->add_welcomemesage_setting();
         $this->add_action_buttons(true, ($instance->id ? null : get_string('addinstance', 'enrol')));
 
         $this->set_data($instance);
@@ -140,6 +141,17 @@ class enrol_autoenrol_edit_form extends moodleform {
         $this->_form->setType('customint5', PARAM_INT);
         $this->_form->setDefault('customint5', 0);
         $this->_form->addHelpButton('customint5', 'countlimit', 'enrol_autoenrol');
+    }
+
+    /**
+     * Adds a custom welcome message setting.
+     */
+    protected function add_welcomemesage_setting() {
+        $this->_form->addElement('header', 'welcomemessageheader', get_string('welcomemessage', 'enrol_autoenrol'));
+        $this->_form->setExpanded('welcomemessageheader', false);
+        $this->_form->addElement('textarea', 'customtext1',
+            get_string('customwelcomemessage', 'enrol_autoenrol'), array('cols' => '60', 'rows' => '8'));
+        $this->_form->addHelpButton('customtext1', 'customwelcomemessage', 'enrol_autoenrol');
     }
 
     /**
