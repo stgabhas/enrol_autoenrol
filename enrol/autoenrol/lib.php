@@ -506,7 +506,7 @@ class enrol_autoenrol_plugin extends enrol_plugin {
         } else {
             // This is most probably the tag/newline soup known as FORMAT_MOODLE.
             $messagehtml = format_text($message, FORMAT_MOODLE,
-                array('context' => $context, 'para' => false, 'newlines' => true, 'filter' => true));
+                array('context' => $context, 'para' => false, 'newlines' => true, 'filter' => false));
             $messagetext = html_to_text($messagehtml);
         }
 
