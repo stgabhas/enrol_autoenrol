@@ -177,8 +177,12 @@ class enrol_autoenrol_plugin extends enrol_plugin {
             if (!isset($USER->email)) {
                 $USER->email = '';
             }
+			
+			if (!isset($USER->phone1)) {
+				$USER->phone1 = '';
+			}
 
-            $type = array(1 => $USER->auth, $USER->department, $USER->institution, $USER->lang, $USER->email);
+            $type = array(1 => $USER->auth, $USER->department, $USER->institution, $USER->lang, $USER->email, $USER->phone1);
 
             if ($instance->customint4) {
                 // Allow partial.
@@ -419,7 +423,7 @@ class enrol_autoenrol_plugin extends enrol_plugin {
             if (strlen($instance->customchar1)) {
                 $name = $instance->customchar1;
             } else {
-                $types = array(1 => $user->auth, $user->department, $user->institution, $user->lang);
+                $types = array(1 => $user->auth, $user->department, $user->institution, $user->lang, $user->phone1);
 
                 $name = $types[$instance->customint2];
 
@@ -429,7 +433,8 @@ class enrol_autoenrol_plugin extends enrol_plugin {
                         get_string('g_dept', 'enrol_autoenrol'),
                         get_string('g_inst', 'enrol_autoenrol'),
                         get_string('g_lang', 'enrol_autoenrol'),
-                        get_string('g_email', 'enrol_autoenrol'));
+                        get_string('g_email', 'enrol_autoenrol')
+						get_string('g_pho1', 'enrol_autoenrol'));
 
                     $name =  get_string('emptyfield', 'enrol_autoenrol', $filtertype[$instance->customint2]);
                 }
