@@ -141,6 +141,12 @@ class enrol_autoenrol_edit_form extends moodleform {
         $this->_form->setType('customint5', PARAM_INT);
         $this->_form->setDefault('customint5', 0);
         $this->_form->addHelpButton('customint5', 'countlimit', 'enrol_autoenrol');
+
+        $this->_form->addElement('text', 'customtext2', get_string('filterword', 'enrol_autoenrol'));
+        $this->_form->setType('customtext2', PARAM_TEXT);
+        $this->_form->setDefault('customtext2', '');
+        $this->_form->addHelpButton('customtext2', 'filterword', 'enrol_autoenrol');
+
     }
 
     /**
@@ -152,11 +158,9 @@ class enrol_autoenrol_edit_form extends moodleform {
         $this->_form->addElement('textarea', 'customtext1',
             get_string('customwelcomemessage', 'enrol_autoenrol'), array('cols' => '60', 'rows' => '8'));
         $this->_form->addHelpButton('customtext1', 'customwelcomemessage', 'enrol_autoenrol');
+
     }
 
-    /**
-     *
-     */
     protected function add_hidden_fields() {
         $this->_form->addElement('hidden', 'id');
         $this->_form->setType('id', PARAM_INT);

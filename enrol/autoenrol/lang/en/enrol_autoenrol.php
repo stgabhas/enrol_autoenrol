@@ -96,3 +96,8 @@ $string['emptyfield'] ='No {$a}';
 
 $string['removegroups'] = 'Remove groups';
 $string['removegroups_desc'] = 'When an enrolment instance is deleted, should it attempt to remove the groups it has created?';
+$string['g_pho1'] = 'Phone';
+
+$string['filterword'] = 'Filter word';
+$string['filterword_help'] = 'Only enrol user with this word in their custom profile field.';
+$string['donotenrolwithwordheader'] = 'Filter user with word';

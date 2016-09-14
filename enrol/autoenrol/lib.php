@@ -112,7 +112,7 @@ class enrol_autoenrol_plugin extends enrol_plugin {
         if ($instance->customint1 == 0 && $this->enrol_allowed($USER, $instance)) {
             $this->enrol_user($instance, $USER->id, $instance->customint3, time(), 0);
             $this->process_group($instance, $USER);
-            $this->email_welcome_message($instance, $USER);
+            //$this->email_welcome_message($instance, $USER);
             return 9999999999;
         }
         return false;
@@ -155,6 +155,12 @@ class enrol_autoenrol_plugin extends enrol_plugin {
                 return false;
             }
         }
+$customUserField = $DB->get_records_sql('SELECT f.id, f.shortname, d.data from {user_info_field} f inner join {user_info_data} d on f.id = d.fieldid where d.userid = ?', array($USER->id));
+$filter = array("Text1", "Text2");
+$getFilterWord = $DB->get_record_sql('SELECT customtext2 as filterword from {enrol} WHERE courseid = ? AND enrol = ?', array($instance->courseid,'autoenrol'));
+for($i=1; $i<=count($customUserField); $i++){
+if (!in_array($customUserField[$i]->data, array($getFilterWord->filterword))) return false;
+}
 
         // Very quick check to see if the user is being filtered.
         if ($instance->customchar1 != '') {
@@ -360,10 +366,10 @@ class enrol_autoenrol_plugin extends enrol_plugin {
      *
      * @return bool
      */
-    public function can_delete_instance($instance) {
-        $context = context_course::instance($instance->courseid);
-        return has_capability('enrol/attributes:config', $context);
-    }
+//    public function can_delete_instance($instance) {
+//        $context = context_course::instance($instance->courseid);
+//        return has_capability('enrol/attributes:config', $context);
+//    }
 
 
     /**
@@ -446,7 +452,7 @@ class enrol_autoenrol_plugin extends enrol_plugin {
                         get_string('g_dept', 'enrol_autoenrol'),
                         get_string('g_inst', 'enrol_autoenrol'),
                         get_string('g_lang', 'enrol_autoenrol'),
-                        get_string('g_email', 'enrol_autoenrol')
+                        get_string('g_email', 'enrol_autoenrol'),
 						get_string('g_pho1', 'enrol_autoenrol'));
 
                     $name =  get_string('emptyfield', 'enrol_autoenrol', $filtertype[$instance->customint2]);
@@ -501,10 +507,10 @@ class enrol_autoenrol_plugin extends enrol_plugin {
      */
     protected function email_welcome_message($instance, $user) {
         global $CFG, $DB;
-        if (empty(trim($instance->customtext1))) {
+        //if (empty(trim($instance->customtext1))) {
             // No welcome message set, nothing to do.
-            return;
-        }
+            //return;
+        //}
 
         $course = $DB->get_record('course', array('id' => $instance->courseid), '*', MUST_EXIST);
         $context = context_course::instance($course->id);
