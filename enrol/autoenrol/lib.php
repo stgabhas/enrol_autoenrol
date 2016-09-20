@@ -155,12 +155,12 @@ class enrol_autoenrol_plugin extends enrol_plugin {
                 return false;
             }
         }
-$customUserField = $DB->get_records_sql('SELECT f.id, f.shortname, d.data from {user_info_field} f inner join {user_info_data} d on f.id = d.fieldid where d.userid = ?', array($USER->id));
-$filter = array("Text1", "Text2");
-$getFilterWord = $DB->get_record_sql('SELECT customtext2 as filterword from {enrol} WHERE courseid = ? AND enrol = ?', array($instance->courseid,'autoenrol'));
-for($i=1; $i<=count($customUserField); $i++){
-if (!in_array($customUserField[$i]->data, array($getFilterWord->filterword))) return false;
-}
+
+        $getFilterWord = $DB->get_record_sql('SELECT customtext2 as filterword, customtext4 as filterField from {enrol} WHERE courseid = ? AND enrol = ?', array($instance->courseid,'autoenrol'));
+
+        $fieldIdData = $DB->get_record_sql('SELECT data as filtercriteria from {user_info_data} WHERE fieldid = ?', array($getFilterWord->filterfield));
+
+        if(strcmp($getFilterWord->filterword, $fieldIdData->filtercriteria) !== 0) return false;
 
         // Very quick check to see if the user is being filtered.
         if ($instance->customchar1 != '') {

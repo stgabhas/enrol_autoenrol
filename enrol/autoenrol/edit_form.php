@@ -113,6 +113,7 @@ class enrol_autoenrol_edit_form extends moodleform {
      * @throws coding_exception
      */
     protected function add_filtering_section() {
+        global $USER, $DB;
         $this->_form->addElement('header', 'filtersection', get_string('filtering', 'enrol_autoenrol'));
         $this->_form->setExpanded('filtersection', false);
 
@@ -142,9 +143,12 @@ class enrol_autoenrol_edit_form extends moodleform {
         $this->_form->setDefault('customint5', 0);
         $this->_form->addHelpButton('customint5', 'countlimit', 'enrol_autoenrol');
 
-        $this->_form->addElement('text', 'customtext2', get_string('filterword', 'enrol_autoenrol'));
+        $userFieldName = $DB->get_records_menu('user_info_field', array(), 'id', 'id, name');
+        $this->_form->addElement('select', 'customtext4', 'Choose profile field', $userFieldName);
+
+        $this->_form->addElement('text', 'customtext2', 'Filter word');
         $this->_form->setType('customtext2', PARAM_TEXT);
-        $this->_form->setDefault('customtext2', '');
+        $this->_form->setDefault('customtext2', 'word1');
         $this->_form->addHelpButton('customtext2', 'filterword', 'enrol_autoenrol');
 
     }

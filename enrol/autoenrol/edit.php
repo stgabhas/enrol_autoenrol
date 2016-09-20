@@ -91,6 +91,7 @@ if ($mform->is_cancelled()) {
         $instance->customchar2 = $data->customchar2;
         $instance->customtext1 = $data->customtext1;
         $instance->customtext2 = $data->customtext2;
+        $instance->customtext4 = $data->customtext4;
 
         $DB->update_record('enrol', $instance);
 
@@ -113,6 +114,7 @@ if ($mform->is_cancelled()) {
         }
         $instance->customtext1 = $data->customtext1;
         $instance->customtext2 = $data->customtext2;
+        $instance->customtext4 = $data->customtext4;
         $plugin->add_instance($course, $fields);
 
     }
