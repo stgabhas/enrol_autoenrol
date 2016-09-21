@@ -144,11 +144,11 @@ class enrol_autoenrol_edit_form extends moodleform {
         $this->_form->addHelpButton('customint5', 'countlimit', 'enrol_autoenrol');
 
         $userFieldName = $DB->get_records_menu('user_info_field', array(), 'id', 'id, name');
-        $this->_form->addElement('select', 'customtext4', 'Choose profile field', $userFieldName);
+        $this->_form->addElement('select', 'customtext4', 'Choose profile field', array('0' => 'Select..')+$userFieldName);
 
         $this->_form->addElement('text', 'customtext2', 'Filter word');
         $this->_form->setType('customtext2', PARAM_TEXT);
-        $this->_form->setDefault('customtext2', '');
+        $this->_form->setDefault('customtext2', 'word1');
         $this->_form->addHelpButton('customtext2', 'filterword', 'enrol_autoenrol');
 
     }
