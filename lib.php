@@ -158,7 +158,7 @@ class enrol_autoenrol_plugin extends enrol_plugin {
 
         $getFilterWord = $DB->get_record_sql('SELECT customtext2 as filterword, customtext4 as filterField from {enrol} WHERE courseid = ? AND enrol = ?', array($instance->courseid,'autoenrol'));
         if(strcmp($getFilterWord->filterfield, '0') !== 0){
-            $fieldIdData = $DB->get_record_sql('SELECT data as filtercriteria from {user_info_data} WHERE fieldid = ?', array($getFilterWord->filterfield));
+            $fieldIdData = $DB->get_record_sql('SELECT id, data as filtercriteria from {user_info_data} WHERE fieldid = ? AND userid = ?', array($getFilterWord->filterfield,$USER->id));
 
             if(strcmp($getFilterWord->filterword, $fieldIdData->filtercriteria) !== 0) return false;
         }
