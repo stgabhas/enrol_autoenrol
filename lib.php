@@ -130,7 +130,7 @@ class enrol_autoenrol_plugin extends enrol_plugin {
      */
     public function enrol_allowed($USER, stdClass $instance) {
         global $DB;
-
+print_object($instance);
         if (isguestuser()) {
             // Can not enrol guest!!
             return false;
@@ -156,12 +156,19 @@ class enrol_autoenrol_plugin extends enrol_plugin {
             }
         }
 
-        $getFilterWord = $DB->get_record_sql('SELECT customtext2 as filterword, customtext4 as filterField from {enrol} WHERE courseid = ? AND enrol = ?', array($instance->courseid,'autoenrol'));
-        if(strcmp($getFilterWord->filterfield, '0') !== 0){
-            $fieldIdData = $DB->get_record_sql('SELECT id, data as filtercriteria from {user_info_data} WHERE fieldid = ? AND userid = ?', array($getFilterWord->filterfield,$USER->id));
-
-            if(strcmp($getFilterWord->filterword, $fieldIdData->filtercriteria) !== 0) return false;
-        }
+        $getFilterWord = $DB->get_records_sql('SELECT customtext2 as filterword, customtext4 as filterField from {enrol} WHERE courseid = ? AND enrol = ?', array($instance->courseid,'autoenrol'));//print_object($getFilterWord);
+        $filterCriteriaArray = array();
+foreach ($getFilterWord as $filterWord){
+        if(strcmp($filterWord->filterfield, '0') !== 0){
+            $fieldIdData = $DB->get_record_sql('SELECT id, data as filtercriteria from {user_info_data} WHERE fieldid = ? AND userid = ?', array($filterWord->filterfield,$USER->id));//print_object($fieldIdData);
+array_push($filterCriteriaArray, $fieldIdData->filtercriteria);
+          //  if(strcmp($filterWord->filterword, $fieldIdData->filtercriteria) !== 0) return false;
+        }}//print_object($filterCriteriaArray);
+$flag = 0;
+foreach($getFilterWord as $fw){
+if(in_array($fw->filterword,$filterCriteriaArray)) $flag=1;
+}//print_object("$flag");
+if($flag == 0) return false;
 
         // Very quick check to see if the user is being filtered.
         if ($instance->customchar1 != '') {
@@ -367,10 +374,10 @@ class enrol_autoenrol_plugin extends enrol_plugin {
      *
      * @return bool
      */
-//    public function can_delete_instance($instance) {
-//        $context = context_course::instance($instance->courseid);
-//        return has_capability('enrol/attributes:config', $context);
-//    }
+    public function can_delete_instance($instance) {
+        $context = context_course::instance($instance->courseid);
+        return has_capability('enrol/autoenrol:config', $context);
+    }
 
 
     /**

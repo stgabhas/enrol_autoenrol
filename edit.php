@@ -114,7 +114,7 @@ if ($mform->is_cancelled()) {
         }
         $instance->customtext1 = $data->customtext1;
         $instance->customtext2 = $data->customtext2;
-        $instance->customtext4 = $data->customtext4;
+        $instance->customtext4 = $data->customtext4;print_object($instance);
         $plugin->add_instance($course, $fields);
 
     }

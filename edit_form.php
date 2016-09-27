@@ -148,7 +148,6 @@ class enrol_autoenrol_edit_form extends moodleform {
 
         $this->_form->addElement('text', 'customtext2', 'Filter word');
         $this->_form->setType('customtext2', PARAM_TEXT);
-        $this->_form->setDefault('customtext2', 'word1');
         $this->_form->addHelpButton('customtext2', 'filterword', 'enrol_autoenrol');
 
     }
